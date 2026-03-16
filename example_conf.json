@@ -1,0 +1,12 @@
+{
+    "monitors": [
+        {
+            "name": "DP-1",
+            "path": "/home/alga/.config/hypr/wallpapers/main/"
+        },
+        {
+            "name": "DP-3",
+            "path": "/home/alga/.config/hypr/wallpapers/side/"
+        }
+    ]
+}
