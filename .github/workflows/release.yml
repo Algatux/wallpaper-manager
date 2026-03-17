@@ -32,7 +32,7 @@ jobs:
         GOARCH: ${{ matrix.goarch }}
       run: |
         output_name="wallpaper-manager-${{ matrix.goos }}-${{ matrix.goarch }}"
-        go build -o "$output_name" ./cmd/daemon
+        go build -ldflags="-s -w -X 'main.version=${{ github.ref_name }}'" -o "$output_name" ./cmd/daemon
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
