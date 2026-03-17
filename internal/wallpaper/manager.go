@@ -1,6 +1,7 @@
 package wallpaper
 
 import (
+	"fmt"
 	"math/rand"
 	"os"
 	"os/exec"
@@ -45,7 +46,7 @@ func (m *Manager) Init() *Manager {
 func (m *Manager) WaitUntilReady() {
 
 	for exec.Command(string(m.executable), "query").Run() != nil {
-		log.LogError("waiting for " + string(m.executable) + "-daemon ...")
+		log.LogError(fmt.Sprintf("waiting for %s-daemon ...", m.executable))
 		time.Sleep(5 * time.Second)
 	}
 
@@ -80,10 +81,10 @@ func (m *Manager) changeWallpapers(config *setup.MonitorList) {
 			args = append(args, strings.Split(monitor.Flags, " ")...)
 		}
 
-		log.LogInfo("setting wallpaper " + wallpaper + " on monitor " + monitor.Name)
+		log.LogInfo(fmt.Sprintf("setting wallpaper %s on monitor %s", wallpaper, monitor.Name))
 		err := exec.Command(string(m.executable), args...).Run()
 		if err != nil {
-			log.LogError("Error switching wallpaper: " + err.Error())
+			log.LogError(fmt.Sprintf("Error switching wallpaper: %s", err.Error()))
 		}
 
 	}
@@ -99,10 +100,10 @@ func NewManager(interval int, file string) *Manager {
 func checkExecutableExistance(executable string) bool {
 	path, err := exec.LookPath(executable)
 	if err != nil {
-		log.LogDebug("executable `" + executable + "` not found " + err.Error())
+		log.LogDebug(fmt.Sprintf("executable `%s` not found %s", executable, err.Error()))
 		return false
 	}
 
-	log.LogDebug("found executable `" + executable + "` in path " + path)
+	log.LogDebug(fmt.Sprintf("found executable `%s` in path %s", executable, path))
 	return true
 }

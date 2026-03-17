@@ -5,7 +5,6 @@ import (
 	"flag"
 	"fmt"
 	"os"
-	"strconv"
 	"strings"
 
 	"github.com/Algatux/wallpaper-manager/internal/filesystem"
@@ -31,18 +30,18 @@ type Inputs struct {
 
 func (i *Inputs) GetConfiguration() (*MonitorList, error) {
 
-	log.LogInfo("loading configuration file `" + i.ConfigFile + "`")
+	log.LogInfo(fmt.Sprintf("loading configuration file `%s`", i.ConfigFile))
 
 	data, err := os.ReadFile(i.ConfigFile)
 	if err != nil {
-		log.LogError("Error reading configuration file: `" + i.ConfigFile + "` - " + err.Error())
+		log.LogError(fmt.Sprintf("Error reading configuration file: `%s` - %s", i.ConfigFile, err.Error()))
 		return nil, err
 	}
 
 	list := MonitorList{}
 	err = json.Unmarshal(data, &list)
 	if err != nil {
-		log.LogError("Error decoding configuration: " + err.Error())
+		log.LogError(fmt.Sprintf("Error decoding configuration: %s", err.Error()))
 		return nil, err
 	}
 
@@ -80,18 +79,18 @@ func logConfiguration(list *MonitorList) {
 	prettyJSON, err := json.MarshalIndent(list, "", "  ")
 
 	if err != nil {
-		log.LogError("could not pretty print config: " + err.Error())
+		log.LogError(fmt.Sprintf("could not pretty print config: %s", err.Error()))
 		log.LogDebug(fmt.Sprintf("configuration (raw): %+v", list))
 		return
 	}
-	log.LogDebug("loaded configuration:\n" + string(prettyJSON))
+	log.LogDebug(fmt.Sprintf("loaded configuration:\n%s", string(prettyJSON)))
 }
 
 func buildMonitorwallpaperList(config *MonitorList) {
 	for i, monitor := range config.Monitors {
 		monitor.Wallpapers = filesystem.ListSupportedImages(monitor.Path)
-		log.LogInfo("Found " + strconv.Itoa(len(monitor.Wallpapers)) + " wallpapers for device `" + monitor.Name + "`")
-		log.LogDebug("[" + strings.Join(monitor.Wallpapers, ",") + "]")
+		log.LogInfo(fmt.Sprintf("Found %d wallpapers for device `%s`", len(monitor.Wallpapers), monitor.Name))
+		log.LogDebug(fmt.Sprintf("[%s]", strings.Join(monitor.Wallpapers, ",")))
 		config.Monitors[i] = monitor
 	}
 }
