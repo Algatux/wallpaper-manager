@@ -1,6 +1,6 @@
 # Wallpaper Manager Daemon
 
-A daemon application that automates wallpaper rotation for Hyprland window manager. The daemon acts as a wrapper around **awww** (a fast and efficient wallpaper daemon for Wayland compositors), enabling automated scheduling and multi-monitor wallpaper management.
+A daemon application that automates wallpaper rotation for Hyprland window manager. The daemon acts as a wrapper around **awww** / **swww** (a fast and efficient wallpaper daemon for Wayland compositors), enabling automated scheduling and multi-monitor wallpaper management.
 
 ## Overview
 
@@ -95,6 +95,11 @@ The daemon supports common image formats including:
 - PNG (.png)
 - JPEG (.jpg, .jpeg)
 - WebP (.webp)
+- BMP (.bmp)
+- PNM (.pnm)
+- TGA (.tga)
+- TIFF (.tiff)
+- GIF (.gif)
 
 ## Building
 
