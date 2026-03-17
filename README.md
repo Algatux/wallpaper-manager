@@ -87,7 +87,7 @@ Create a JSON file defining monitors and their wallpaper directories:
 1. **Initialization** — The daemon parses command-line arguments and loads the monitor configuration
 2. **Wallpaper Discovery** — For each configured monitor, the daemon scans the specified directory and discovers supported image files
 3. **Rotation Loop** — At the specified interval, the daemon cycles through available wallpapers and applies them to each monitor via awww
-4. **Lock File** — A lock file ensures synchronized wallpaper cycling across multiple processes or system instances
+4. **Lock File** — A lock file is meant to enable external processes or scripts to pause the wallpaper cycles, if present the cycle will not happen
 
 ## Supported Image Formats
 

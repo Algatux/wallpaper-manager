@@ -1,13 +1,11 @@
 package main
 
 import (
-	"fmt"
 	"os"
-	"strings"
 
-	"github.com/Algatux/wallpaper-manager/internal/filesystem"
 	"github.com/Algatux/wallpaper-manager/internal/log"
 	"github.com/Algatux/wallpaper-manager/internal/setup"
+	"github.com/Algatux/wallpaper-manager/internal/wallpaper"
 )
 
 var version = "dev"
@@ -23,12 +21,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	monitorWallpapers := map[string][]string{}
-
-	for _, monitor := range config.Monitors {
-		monitorWallpapers[monitor.Name] = filesystem.ListSupportedImages(monitor.Path)
-		log.LogInfo(fmt.Sprintf("Found %d wallpapers for device `%s`", len(monitorWallpapers[monitor.Name]), monitor.Name))
-		log.LogDebug(fmt.Sprintf("[%s]`", strings.Join(monitorWallpapers[monitor.Name], ",")))
+	manager := wallpaper.NewManager(inputs.Interval, inputs.LockFile)
+	if manager == nil {
+		log.LogError("Wallpaper manager was unable to start.")
+		os.Exit(1)
 	}
 
+	manager.WaitUntilReady()
+	manager.CycleWallpapers(config)
 }

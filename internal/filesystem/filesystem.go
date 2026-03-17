@@ -27,7 +27,7 @@ func ListSupportedImages(dir string) []string {
 
 	entries, err := os.ReadDir(dir)
 	if err != nil {
-		log.LogError(fmt.Sprintf("Error reading path `%s`, %s", dir, err.Error()))
+		log.LogError(fmt.Sprintf("error reading path `%s`, %s", dir, err.Error()))
 	}
 
 	pathSeparator := ""

@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"runtime"
+	"strconv"
 	"time"
 )
 
@@ -24,7 +25,7 @@ func LogDebug(message string) error {
 
 	source := "unknown:0"
 	if ok {
-		source = fmt.Sprintf("%s:%d", filepath.Base(file), line)
+		source = filepath.Base(file) + ":" + strconv.Itoa(line)
 	}
 
 	timestamp := time.Now().Format(time.RFC3339)
@@ -40,5 +41,5 @@ func LogError(message string) error {
 }
 
 func addTime(message string) string {
-	return fmt.Sprintf("[%s] %s", time.Now().Format(time.RFC3339), message)
+	return "[" + time.Now().Format(time.RFC3339) + "] " + message
 }

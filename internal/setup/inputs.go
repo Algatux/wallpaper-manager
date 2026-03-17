@@ -5,7 +5,10 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"strconv"
+	"strings"
 
+	"github.com/Algatux/wallpaper-manager/internal/filesystem"
 	"github.com/Algatux/wallpaper-manager/internal/log"
 )
 
@@ -13,9 +16,10 @@ type MonitorList struct {
 	Monitors []MonitorConfig `json:"monitors"`
 }
 type MonitorConfig struct {
-	Name  string `json:"name"`
-	Path  string `json:"path"`
-	Flags string `json:"flags"`
+	Name       string   `json:"name"`
+	Path       string   `json:"path"`
+	Flags      string   `json:"flags"`
+	Wallpapers []string `json:"wallpapers"`
 }
 
 type Inputs struct {
@@ -27,22 +31,23 @@ type Inputs struct {
 
 func (i *Inputs) GetConfiguration() (*MonitorList, error) {
 
-	log.LogInfo(fmt.Sprintf("Loading configuration file `%s`", i.ConfigFile))
+	log.LogInfo("loading configuration file `" + i.ConfigFile + "`")
 
 	data, err := os.ReadFile(i.ConfigFile)
 	if err != nil {
-		log.LogError(fmt.Sprintf("Error reading configuration file: `%s` - %s", i.ConfigFile, err.Error()))
+		log.LogError("Error reading configuration file: `" + i.ConfigFile + "` - " + err.Error())
 		return nil, err
 	}
 
 	list := MonitorList{}
 	err = json.Unmarshal(data, &list)
 	if err != nil {
-		log.LogError(fmt.Sprintf("Error decoding configuration: %s", err.Error()))
+		log.LogError("Error decoding configuration: " + err.Error())
 		return nil, err
 	}
 
-	logConfiguration(list)
+	buildMonitorwallpaperList(&list)
+	logConfiguration(&list)
 
 	return &list, nil
 
@@ -71,13 +76,22 @@ func InitHelp(version string) {
 	}
 }
 
-func logConfiguration(list MonitorList) {
+func logConfiguration(list *MonitorList) {
 	prettyJSON, err := json.MarshalIndent(list, "", "  ")
 
 	if err != nil {
-		log.LogError(fmt.Sprintf("Could not pretty print config: %v", err))
-		log.LogDebug(fmt.Sprintf("Configuration (raw): %+v", list))
+		log.LogError("could not pretty print config: " + err.Error())
+		log.LogDebug(fmt.Sprintf("configuration (raw): %+v", list))
 		return
 	}
-	log.LogDebug(fmt.Sprintf("Loaded Configuration:\n%s", string(prettyJSON)))
+	log.LogDebug("loaded configuration:\n" + string(prettyJSON))
+}
+
+func buildMonitorwallpaperList(config *MonitorList) {
+	for i, monitor := range config.Monitors {
+		monitor.Wallpapers = filesystem.ListSupportedImages(monitor.Path)
+		log.LogInfo("Found " + strconv.Itoa(len(monitor.Wallpapers)) + " wallpapers for device `" + monitor.Name + "`")
+		log.LogDebug("[" + strings.Join(monitor.Wallpapers, ",") + "]")
+		config.Monitors[i] = monitor
+	}
 }
