@@ -46,7 +46,6 @@ func (i *Inputs) GetConfiguration() (*MonitorList, error) {
 	}
 
 	buildMonitorwallpaperList(&list)
-	logConfiguration(&list)
 
 	return &list, nil
 
@@ -73,17 +72,6 @@ func InitHelp(version string) {
 		fmt.Fprintln(os.Stdout, "Options:")
 		flag.PrintDefaults()
 	}
-}
-
-func logConfiguration(list *MonitorList) {
-	prettyJSON, err := json.MarshalIndent(list, "", "  ")
-
-	if err != nil {
-		log.LogError(fmt.Sprintf("could not pretty print config: %s", err.Error()))
-		log.LogDebug(fmt.Sprintf("configuration (raw): %+v", list))
-		return
-	}
-	log.LogDebug(fmt.Sprintf("loaded configuration:\n%s", string(prettyJSON)))
 }
 
 func buildMonitorwallpaperList(config *MonitorList) {
